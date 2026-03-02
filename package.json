@@ -1,0 +1,12 @@
+{
+  "name": "iut-cafeteria-frontend",
+  "version": "1.0.0",
+  "description": "Frontend server for IUT Cafeteria Iftar Rush",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IUT Cafeteria — Iftar Rush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080f;
+  --surface:#0d0e1a;
+  --card:#111225;
+  --border:#1c1d35;
+  --border2:#252645;
+  --gold:#e8b84b;
+  --gold2:#f5d07a;
+  --gold-dim:#7a5f20;
+  --gold-bg:rgba(232,184,75,0.07);
+  --teal:#2ec4b6;
+  --teal-dim:#0d4d48;
+  --red:#e05c5c;
+  --red-bg:rgba(224,92,92,0.1);
+  --green:#4cbb8a;
+  --green-bg:rgba(76,187,138,0.1);
+  --sky:#5b9cf6;
+  --text:#eeeef5;
+  --muted:#6b6d8a;
+  --muted2:#9294b0;
+  --r:8px;
+  --r2:12px;
+}
+
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+
+/* ── Stars bg ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%,rgba(232,184,75,0.06) 0%,transparent 60%),
+    radial-gradient(circle at 80% 20%,rgba(46,196,182,0.04) 0%,transparent 40%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Geometric lattice ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,184,75,0.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
+}
+
+#root{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── HEADER ── */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:60px;
+  background:rgba(7,8,15,0.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:200;
+}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-moon{font-size:22px;line-height:1;filter:drop-shadow(0 0 8px rgba(232,184,75,0.5))}
+.hdr-name{font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text)}
+.hdr-tag{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-nav{display:flex;gap:2px}
+.hdr-btn{
+  padding:6px 14px;background:transparent;
+  border:1px solid transparent;border-radius:6px;
+  color:var(--muted);font-family:'Outfit',sans-serif;font-size:12px;
+  font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;transition:.15s;
+}
+.hdr-btn:hover,.hdr-btn.on{border-color:var(--border2);color:var(--gold);background:var(--gold-bg)}
+.user-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 12px;background:var(--card);
+  border:1px solid var(--border);border-radius:100px;
+  font-size:12px;color:var(--muted2);
+}
+.user-chip strong{color:var(--text);font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse-g 2s infinite}
+@keyframes pulse-g{50%{opacity:.4}}
+.btn-sm{
+  padding:5px 12px;background:transparent;border:1px solid var(--border);
+  border-radius:6px;color:var(--muted);font-family:'Outfit',sans-serif;
+  font-size:11px;cursor:pointer;transition:.15s;
+}
+.btn-sm:hover{border-color:var(--border2);color:var(--text)}
+
+/* ── PAGES ── */
+.pg{display:none;flex:1;flex-direction:column}
+.pg.on{display:flex}
+
+/* ── LOGIN ── */
+.login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.login-box{
+  width:380px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--r2);
+  overflow:hidden;
+  animation:fade-up .5s ease both;
+}
+@keyframes fade-up{from{opacity:0;transform:translateY(20px)}}
+.login-top{
+  padding:36px 32px 28px;text-align:center;
+  background:linear-gradient(160deg,rgba(232,184,75,0.06) 0%,transparent 60%);
+  border-bottom:1px solid var(--border);
+}
+.login-arabic{
+  font-family:'Amiri',serif;font-size:48px;color:var(--gold);
+  display:block;line-height:1;margin-bottom:4px;
+  filter:drop-shadow(0 2px 12px rgba(232,184,75,0.3));
+}
+.login-h{font-size:19px;font-weight:700;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.login-body{padding:28px 32px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fld input{
+  width:100%;padding:10px 14px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;
+  outline:none;transition:.15s;
+}
+.fld input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,184,75,0.1)}
+.fld input::placeholder{color:#2e2f4a}
+.err{
+  padding:10px 14px;background:var(--red-bg);border:1px solid var(--red);
+  border-radius:var(--r);color:var(--red);font-size:12px;
+  margin-bottom:14px;display:none;
+}
+.err.on{display:block}
+.btn-gold{
+  width:100%;padding:12px;
+  background:linear-gradient(135deg,var(--gold),#c9941e);
+  border:none;border-radius:var(--r);
+  color:#07080f;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+  transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-gold:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.hint{
+  margin-top:18px;padding:12px;
+  background:rgba(232,184,75,0.04);border:1px dashed var(--gold-dim);
+  border-radius:var(--r);font-size:11px;color:var(--muted);text-align:center;line-height:1.8;
+}
+.hint b{color:var(--gold)}
+
+/* ── ORDER PAGE ── */
+.order-layout{flex:1;display:grid;grid-template-columns:1fr 340px;min-height:0}
+.menu-area{padding:24px;overflow-y:auto;border-right:1px solid var(--border)}
+.sidebar{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.sec-title{
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* menu grid */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.mcard{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;
+}
+.mcard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--teal));
+  opacity:0;transition:.2s;
+}
+.mcard:hover{border-color:var(--border2);transform:translateY(-2px)}
+.mcard:hover::before{opacity:.7}
+.mcard.sel{border-color:var(--gold);background:var(--gold-bg)}
+.mcard.sel::before{opacity:1}
+.mcard.oos{opacity:.35;cursor:default}
+.mcard.oos:hover{transform:none;border-color:var(--border)}
+.mc-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.mc-desc{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+.mc-foot{display:flex;align-items:center;justify-content:space-between}
+.mc-price{font-weight:700;color:var(--gold);font-size:14px}
+.mc-stock{font-size:10px;color:var(--muted)}
+.mc-stock.lo{color:var(--red)}
+.mc-stock.med{color:var(--gold)}
+.mc-stock.ok{color:var(--green)}
+
+/* sidebar cards */
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sc-hdr{
+  padding:11px 16px;border-bottom:1px solid var(--border);
+  font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  font-weight:500;display:flex;align-items:center;justify-content:space-between;
+}
+.sc-body{padding:16px}
+
+/* order form */
+.sel-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.sel-price{font-size:11px;color:var(--muted);margin-bottom:14px}
+.qty{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.qty-btn{
+  width:30px;height:30px;background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-n{font-size:20px;font-weight:800;min-width:24px;text-align:center}
+.total-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-top:1px solid var(--border);margin-bottom:14px;
+}
+.total-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.total-val{font-size:22px;font-weight:800;color:var(--gold)}
+.empty-sel{
+  text-align:center;padding:20px;color:var(--muted);font-size:12px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.empty-icon{font-size:28px;opacity:.3}
+
+/* tracker */
+.track{display:flex;flex-direction:column}
+.t-step{display:flex;gap:11px;padding:8px 0;position:relative}
+.t-step:not(:last-child)::after{
+  content:'';position:absolute;left:9px;top:26px;bottom:-6px;width:1px;background:var(--border);
+}
+.t-step.done::after{background:var(--green)}
+.t-step.active::after{background:linear-gradient(var(--gold),var(--border))}
+.t-dot{
+  width:19px;height:19px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  border:2px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-size:9px;
+  transition:.3s;
+}
+.t-step.done .t-dot{background:var(--green);border-color:var(--green);color:white}
+.t-step.active .t-dot{border-color:var(--gold);animation:ring 1.2s infinite}
+@keyframes ring{50%{box-shadow:0 0 0 5px rgba(232,184,75,0.12)}}
+.t-lbl{font-size:12px;font-weight:500;color:var(--muted);transition:.2s}
+.t-step.done .t-lbl{color:var(--green)}
+.t-step.active .t-lbl{color:var(--gold)}
+.t-time{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* notif feed */
+.nfeed{display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto}
+.nitem{
+  display:flex;gap:8px;align-items:flex-start;
+  padding:7px 10px;background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;animation:nin .25s ease;
+}
+@keyframes nin{from{opacity:0;transform:translateX(-8px)}}
+.nbadge{
+  font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;
+}
+.nbadge.PENDING{background:rgba(91,156,246,0.15);color:var(--sky);border:1px solid rgba(91,156,246,0.3)}
+.nbadge.STOCK_VERIFIED{background:rgba(232,184,75,0.12);color:var(--gold);border:1px solid var(--gold-dim)}
+.nbadge.IN_KITCHEN{background:rgba(232,184,75,0.18);color:var(--gold2);border:1px solid var(--gold)}
+.nbadge.READY{background:var(--green-bg);color:var(--green);border:1px solid rgba(76,187,138,0.3)}
+.nbadge.ERROR,.nbadge.KITCHEN_ERROR{background:var(--red-bg);color:var(--red);border:1px solid rgba(224,92,92,0.3)}
+.nbadge.connected{background:var(--green-bg);color:var(--green);border:1px solid rgba(76,187,138,0.3)}
+.nmsg{font-size:11px;color:var(--muted);line-height:1.4}
+.conn-state{font-size:10px;color:var(--muted)}
+.conn-state.live{color:var(--green)}
+.conn-state.off{color:var(--red)}
+
+/* ADMIN */
+.admin-wrap{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:22px}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px}
+.svc-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;position:relative;overflow:hidden;
+}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:.3s}
+.svc-card.ok::before{background:var(--green)}
+.svc-card.degraded::before{background:var(--gold)}
+.svc-card.down::before{background:var(--red)}
+.svc-card.ok{border-color:rgba(76,187,138,0.2)}
+.svc-card.down{border-color:rgba(224,92,92,0.2)}
+.svc-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px}
+.svc-st{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.svc-card.ok .svc-st{color:var(--green)}
+.svc-card.degraded .svc-st{color:var(--gold)}
+.svc-card.down .svc-st{color:var(--red)}
+.svc-meta{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.7;font-family:'DM Mono',monospace}
+.kill-btn{
+  margin-top:10px;padding:4px 10px;
+  background:var(--red-bg);border:1px solid rgba(224,92,92,0.25);
+  border-radius:4px;color:var(--red);font-family:'Outfit',sans-serif;
+  font-size:10px;font-weight:500;cursor:pointer;transition:.15s;
+}
+.kill-btn:hover{background:rgba(224,92,92,0.2)}
+
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.mmet{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.mmet-lbl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.mmet-val{font-size:30px;font-weight:800;color:var(--text);line-height:1}
+.mmet-val.alert{color:var(--red);animation:blink .9s infinite}
+@keyframes blink{50%{opacity:.4}}
+.mmet-unit{font-size:10px;color:var(--muted);margin-top:4px}
+
+.alert-bar{
+  padding:12px 18px;background:var(--red-bg);
+  border:1px solid var(--red);border-radius:var(--r);
+  color:var(--red);font-size:12px;font-weight:600;
+  display:none;align-items:center;gap:10px;
+}
+.alert-bar.on{display:flex;animation:pulse-border 1s infinite}
+@keyframes pulse-border{50%{border-color:rgba(224,92,92,.3)}}
+
+/* chaos info box */
+.chaos-box{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;font-size:12px;color:var(--muted);line-height:1.8;
+}
+.chaos-box strong{color:var(--red)}
+
+/* spinner */
+.spin{
+  width:13px;height:13px;border:2px solid rgba(255,255,255,.15);
+  border-top-color:currentColor;border-radius:50%;
+  animation:sp .7s linear infinite;display:inline-block;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .order-layout{grid-template-columns:1fr}
+  .sidebar{border-top:1px solid var(--border)}
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="root">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-brand">
+      <span class="hdr-moon">☪️</span>
+      <div>
+        <div class="hdr-name">IUT Cafeteria</div>
+        <div class="hdr-tag">Iftar Rush — DevSprint 2026</div>
+      </div>
+    </div>
+    <nav class="hdr-nav" id="nav">
+      <button class="hdr-btn" data-pg="order" id="nav-order" style="display:none">Order</button>
+      <button class="hdr-btn" data-pg="admin" id="nav-admin" style="display:none">Admin</button>
+    </nav>
+    <div class="hdr-right" id="hdr-right">
+      <span style="font-size:11px;color:var(--muted)">Not signed in</span>
+    </div>
+  </header>
+
+  <!-- LOGIN PAGE -->
+  <div class="pg on" id="pg-login">
+    <div class="login-wrap">
+      <div class="login-box">
+        <div class="login-top">
+          <span class="login-arabic">إفطار</span>
+          <div class="login-h">Iftar Order Portal</div>
+          <div class="login-sub">IUT Cafeteria · Ramadan 2026</div>
+        </div>
+        <div class="login-body">
+          <div class="fld">
+            <label>Student ID</label>
+            <input id="inp-id" type="text" placeholder="e.g. 210042101" autocomplete="username"/>
+          </div>
+          <div class="fld">
+            <label>Password</label>
+            <input id="inp-pw" type="password" placeholder="••••••••" autocomplete="current-password"/>
+          </div>
+          <div class="err" id="login-err"></div>
+          <button class="btn-gold" id="login-btn">Sign In</button>
+          <div class="hint">
+            Demo logins: <b>210042101</b> · <b>210042102</b> · <b>210042103</b><br>
+            Password: <b>password123</b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER PAGE -->
+  <div class="pg" id="pg-order">
+    <div class="order-layout">
+      <!-- Menu -->
+      <div class="menu-area">
+        <div class="sec-title">Iftar Menu</div>
+        <div class="menu-grid" id="menu-grid">
+          <div style="color:var(--muted);font-size:12px;padding:20px">Loading menu...</div>
+        </div>
+      </div>
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Cart -->
+        <div class="sc">
+          <div class="sc-hdr">Your Order</div>
+          <div class="sc-body" id="cart-body">
+            <div class="empty-sel">
+              <div class="empty-icon">🍽</div>
+              <div>Pick an item from the menu</div>
+            </div>
+          </div>
+        </div>
+        <!-- Tracker -->
+        <div class="sc">
+          <div class="sc-hdr">Order Status</div>
+          <div class="sc-body">
+            <div class="track" id="tracker"></div>
+          </div>
+        </div>
+        <!-- Notifications -->
+        <div class="sc">
+          <div class="sc-hdr">
+            Live Feed
+            <span class="conn-state off" id="conn-lbl">● Disconnected</span>
+          </div>
+          <div class="sc-body">
+            <div class="nfeed" id="nfeed"><div style="color:var(--muted);font-size:11px">Awaiting events...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div class="pg" id="pg-admin">
+    <div class="admin-wrap">
+      <div class="alert-bar" id="alert-bar">⚠ HIGH LATENCY — Gateway avg &gt;1000ms over 30 seconds</div>
+      <div>
+        <div class="sec-title">Service Health Grid</div>
+        <div class="hgrid" id="health-grid">
+          <div style="color:var(--muted);font-size:12px">Loading health data...</div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">Live Metrics</div>
+        <div class="mgrid" id="metrics-grid">
+          <div style="color:var(--muted);font-size:12px">Loading metrics...</div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">Chaos Engineering</div>
+        <div class="chaos-box">
+          Use <strong>Kill Service</strong> on any service card above to simulate a failure mid-flow.<br>
+          The system is designed to degrade gracefully — notification failures won't block orders,
+          and stock is protected by idempotency keys even if services crash mid-request.<br>
+          <span style="color:var(--muted2)">Services restart automatically via Docker <code>restart: unless-stopped</code>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const BASE = {
+  identity: 'http://localhost:4001',
+  gateway:  'http://localhost:4000',
+  notif:    'http://localhost:4004',
+  stock:    'http://localhost:4002',
+  kitchen:  'http://localhost:4003',
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let S = {
+  token: null, studentId: null, name: null,
+  page: 'login',
+  menu: [],
+  sel: null, qty: 1,
+  orders: {}, // id -> {status,...}
+  notifs: [],
+  sse: null,
+  health: {}, metrics: {},
+  adminTimer: null,
+};
+
+// ── DEMO DATA ────────────────────────────────────────────────────────────────
+const DEMO_USERS = {
+  '210042101': { name: 'Ahmed Hassan',   hash: 'password123' },
+  '210042102': { name: 'Fatima Rahman',  hash: 'password123' },
+  '210042103': { name: 'Omar Siddiqui', hash: 'password123' },
+};
+const DEMO_MENU = [
+  { id:1, name:'Iftar Combo A',    description:'Dates, Piyaju, Beguni, Haleem, Water',        price:120, stock:48 },
+  { id:2, name:'Iftar Combo B',    description:'Dates, Jilapi, Chicken Pakora, Khichuri',      price:150, stock:37 },
+  { id:3, name:'Special Biryani', description:'Full plate Kacchi Biryani with Raita',          price:200, stock:22 },
+  { id:4, name:'Haleem Bowl',      description:'Rich beef haleem with fresh naan',              price:100, stock:55 },
+  { id:5, name:'Mixed Snack Box',  description:'Assorted Ramadan snacks · Piyaju, Jilapi +',  price:80,  stock:0  },
+];
+const DEMO_SERVICES = [
+  { id:'identity-provider', name:'Identity Provider', port:4001, killable:false },
+  { id:'order-gateway',     name:'Order Gateway',     port:4000, killable:false },
+  { id:'stock-service',     name:'Stock Service',     port:4002, killable:true  },
+  { id:'kitchen-queue',     name:'Kitchen Queue',     port:4003, killable:true  },
+  { id:'notification-hub',  name:'Notification Hub',  port:4004, killable:true  },
+];
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+const fmt = n => parseFloat(n).toFixed(2);
+const ts  = () => new Date().toLocaleTimeString('en-US',{hour12:false});
+const esc = s => String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+async function apiFetch(url, opts={}) {
+  const h = {'Content-Type':'application/json',...(opts.headers||{})};
+  if (S.token) h['Authorization'] = `Bearer ${S.token}`;
+  const r = await fetch(url, {...opts, headers:h});
+  const d = await r.json().catch(()=>({}));
+  return {ok:r.ok, status:r.status, data:d};
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showPage(pg) {
+  S.page = pg;
+  document.querySelectorAll('.pg').forEach(el => el.classList.toggle('on', el.id === `pg-${pg}`));
+  document.querySelectorAll('.hdr-btn[data-pg]').forEach(b => b.classList.toggle('on', b.dataset.pg === pg));
+  if (pg === 'order') initOrderPage();
+  if (pg === 'admin') startAdminPoll();
+  else stopAdminPoll();
+}
+
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('inp-pw').addEventListener('keydown', e => e.key==='Enter' && doLogin());
+
+async function doLogin() {
+  const id   = document.getElementById('inp-id').value.trim();
+  const pass = document.getElementById('inp-pw').value;
+  const err  = document.getElementById('login-err');
+  const btn  = document.getElementById('login-btn');
+
+  err.classList.remove('on');
+  if (!id||!pass){showErr(err,'Enter your Student ID and password');return}
+
+  btn.innerHTML = '<span class="spin"></span> Signing in...';
+  btn.disabled = true;
+
+  // Try real API, fall back to demo
+  let success = false;
+  try {
+    const {ok,status,data} = await apiFetch(`${BASE.identity}/auth/login`,{
+      method:'POST', body:JSON.stringify({student_id:id,password:pass})
+    });
+    if (ok) {
+      S.token = data.token; S.studentId = data.student_id; S.name = data.name;
+      success = true;
+    } else if (status===429) {
+      showErr(err, `Rate limited: ${data.error}`);
+    } else {
+      showErr(err, data.error||'Invalid credentials');
+    }
+  } catch {
+    // Fallback: demo mode
+    const u = DEMO_USERS[id];
+    if (u && pass===u.hash) {
+      S.token = 'demo-token-'+id; S.studentId = id; S.name = u.name;
+      success = true;
+    } else {
+      showErr(err,'Invalid credentials (demo: password123)');
+    }
+  }
+
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (!success) return;
+
+  // Show nav + user chip
+  document.getElementById('nav-order').style.display='';
+  document.getElementById('nav-admin').style.display='';
+  document.getElementById('hdr-right').innerHTML = `
+    <div class="user-chip"><span class="dot"></span><strong>${esc(S.name)}</strong><span style="color:var(--muted)">${S.studentId}</span></div>
+    <button class="btn-sm" id="logout-btn">Logout</button>`;
+  document.getElementById('logout-btn').addEventListener('click', doLogout);
+
+  document.querySelectorAll('.hdr-btn[data-pg]').forEach(b => {
+    b.addEventListener('click', () => showPage(b.dataset.pg));
+  });
+
+  showPage('order');
+  connectSSE();
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.add('on'); }
+
+function doLogout() {
+  if (S.sse) { S.sse.close(); S.sse=null; }
+  stopAdminPoll();
+  S = {token:null,studentId:null,name:null,page:'login',menu:[],sel:null,qty:1,orders:{},notifs:[],sse:null,health:{},metrics:{},adminTimer:null};
+  document.getElementById('nav-order').style.display='none';
+  document.getElementById('nav-admin').style.display='none';
+  document.getElementById('hdr-right').innerHTML=`<span style="font-size:11px;color:var(--muted)">Not signed in</span>`;
+  showPage('login');
+}
+
+// ── SSE ───────────────────────────────────────────────────────────────────────
+function connectSSE() {
+  try {
+    const es = new EventSource(`${BASE.notif}/events?student_id=${S.studentId}`);
+    S.sse = es;
+    es.onopen = () => updateConnLabel(true);
+    es.onmessage = e => {
+      try {
+        const d = JSON.parse(e.data);
+        if (d.type==='order_update'||d.type==='system') onNotif(d);
+        if (d.type==='connected') updateConnLabel(true);
+      } catch {}
+    };
+    es.onerror = () => { updateConnLabel(false); setTimeout(connectSSE,3000); };
+  } catch {
+    updateConnLabel(false);
+  }
+}
+
+function updateConnLabel(live) {
+  const el = document.getElementById('conn-lbl');
+  if (!el) return;
+  el.textContent = live ? '● Live' : '● Disconnected';
+  el.className = 'conn-state ' + (live ? 'live' : 'off');
+}
+
+function onNotif(d) {
+  S.notifs.push(d);
+  if (S.notifs.length > 30) S.notifs.shift();
+  if (d.order_id && d.status) {
+    if (!S.orders[d.order_id]) S.orders[d.order_id] = {};
+    Object.assign(S.orders[d.order_id], d);
+  }
+  if (S.page==='order') { renderFeed(); renderTracker(); }
+}
+
+// ── ORDER PAGE ───────────────────────────────────────────────────────────────
+async function initOrderPage() {
+  renderTracker();
+  renderFeed();
+  renderCart();
+  await loadMenu();
+}
+
+async function loadMenu() {
+  let items = DEMO_MENU;
+  try {
+    const {ok,data} = await apiFetch(`${BASE.gateway}/menu`);
+    if (ok && Array.isArray(data)) items = data;
+  } catch {}
+  S.menu = items;
+  renderMenu();
+}
+
+function renderMenu() {
+  const g = document.getElementById('menu-grid');
+  if (!g) return;
+  g.innerHTML = S.menu.map(it => {
+    const oos = it.stock===0;
+    const cls = oos ? 'oos' : (S.sel?.id===it.id ? 'sel' : '');
+    const stCls = oos ? 'lo' : (it.stock<10 ? 'med' : 'ok');
+    const stTxt = oos ? 'Out of stock' : `${it.stock} left`;
+    return `<div class="mcard ${cls}" data-id="${it.id}" onclick="selectItem(${it.id})">
+      <div class="mc-name">${esc(it.name)}</div>
+      <div class="mc-desc">${esc(it.description||'')}</div>
+      <div class="mc-foot">
+        <span class="mc-price">৳${fmt(it.price)}</span>
+        <span class="mc-stock ${stCls}">${stTxt}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectItem(id) {
+  const it = S.menu.find(m=>m.id===id);
+  if (!it || it.stock===0) return;
+  S.sel = it; S.qty = 1;
+  renderMenu();
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-body');
+  if (!el) return;
+  const it = S.sel;
+  if (!it) {
+    el.innerHTML = `<div class="empty-sel"><div class="empty-icon">🍽</div><div>Pick an item from the menu</div></div>`;
+    return;
+  }
+  const total = it.price * S.qty;
+  el.innerHTML = `
+    <div class="sel-name">${esc(it.name)}</div>
+    <div class="sel-price">৳${fmt(it.price)} per item</div>
+    <div class="qty">
+      <button class="qty-btn" onclick="adjQty(-1)">−</button>
+      <div class="qty-n" id="qty-n">${S.qty}</div>
+      <button class="qty-btn" onclick="adjQty(1)">+</button>
+    </div>
+    <div class="total-row">
+      <span class="total-lbl">Total</span>
+      <span class="total-val">৳${fmt(total)}</span>
+    </div>
+    <button class="btn-gold" id="order-btn" onclick="placeOrder()">Place Iftar Order</button>
+    <div class="err" id="order-err"></div>`;
+}
+
+function adjQty(d) {
+  S.qty = Math.max(1, Math.min(10, S.qty+d));
+  renderCart();
+}
+
+async function placeOrder() {
+  if (!S.sel) return;
+  const btn = document.getElementById('order-btn');
+  const err = document.getElementById('order-err');
+  btn.innerHTML='<span class="spin"></span> Placing order...';
+  btn.disabled=true;
+  if (err) err.classList.remove('on');
+
+  // Simulate optimistic status push
+  const tmpId = 'order-' + Date.now();
+  S.orders[tmpId] = {order_id:tmpId, status:'PENDING'};
+  renderTracker();
+  addNotif({type:'order_update',order_id:tmpId,status:'PENDING',message:'Order received. Checking stock...'});
+
+  let orderId = tmpId;
+  try {
+    const {ok,status,data} = await apiFetch(`${BASE.gateway}/orders`,{
+      method:'POST',
+      body:JSON.stringify({item_id:S.sel.id, quantity:S.qty})
+    });
+    if (!ok) {
+      addNotif({type:'order_update',order_id:tmpId,status:'ERROR',message:data.error||`Error (${status})`});
+      S.orders[tmpId].status='ERROR';
+      renderTracker();
+      if(err){err.textContent=data.error||'Order failed';err.classList.add('on')}
+    } else {
+      orderId = data.order_id||tmpId;
+      S.orders[orderId]={...data,order_id:orderId};
+      delete S.orders[tmpId];
+      addNotif({type:'order_update',order_id:orderId,status:'IN_KITCHEN',message:'Your Iftar is being prepared!'});
+      renderTracker();
+      // refresh stock
+      loadMenu();
+    }
+  } catch {
+    // Demo mode: simulate full flow
+    simulateDemoOrder(tmpId);
+  }
+
+  btn.disabled=false; btn.textContent='Place Iftar Order';
+}
+
+function simulateDemoOrder(id) {
+  const steps = [
+    [300,  'PENDING',        'Order received. Checking stock...'],
+    [900,  'STOCK_VERIFIED', 'Stock confirmed! Sending to kitchen...'],
+    [1400, 'IN_KITCHEN',     'Your Iftar is being prepared! 🍽'],
+    [5000, 'READY',          'Your order is ready for pickup! 🎉'],
+  ];
+  steps.forEach(([delay, status, msg]) => {
+    setTimeout(() => {
+      if (!S.orders[id]) return;
+      S.orders[id].status = status;
+      addNotif({type:'order_update', order_id:id, status, message:msg});
+      renderTracker();
+      // Update stock in demo
+      if (status==='STOCK_VERIFIED' && S.sel) {
+        const m = S.menu.find(x=>x.id===S.sel?.id);
+        if (m) { m.stock = Math.max(0, m.stock - S.qty); renderMenu(); }
+      }
+    }, delay);
+  });
+}
+
+function renderTracker() {
+  const el = document.getElementById('tracker');
+  if (!el) return;
+  const STEPS = [
+    {k:'PENDING',        lbl:'Order Placed'},
+    {k:'STOCK_VERIFIED', lbl:'Stock Verified'},
+    {k:'IN_KITCHEN',     lbl:'In Kitchen'},
+    {k:'READY',          lbl:'Ready for Pickup'},
+  ];
+  const ORDER = ['PENDING','STOCK_VERIFIED','IN_KITCHEN','READY'];
+  const last = Object.values(S.orders).slice(-1)[0];
+  const cur = last?.status||null;
+  const idx = cur ? ORDER.indexOf(cur) : -1;
+  el.innerHTML = STEPS.map((s,i)=>{
+    const done = idx>i, active = idx===i;
+    return `<div class="t-step ${done?'done':''} ${active?'active':''}">
+      <div class="t-dot">${done?'✓':''}</div>
+      <div>
+        <div class="t-lbl">${s.lbl}</div>
+        ${active?`<div class="t-time">${ts()}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addNotif(d) {
+  S.notifs.push(d);
+  if (S.notifs.length>30) S.notifs.shift();
+  renderFeed();
+}
+
+function renderFeed() {
+  const el = document.getElementById('nfeed');
+  if (!el) return;
+  if (!S.notifs.length) { el.innerHTML='<div style="color:var(--muted);font-size:11px">Awaiting events...</div>'; return; }
+  el.innerHTML = [...S.notifs].reverse().map(n=>`
+    <div class="nitem">
+      <span class="nbadge ${n.status||''}">${n.status||'info'}</span>
+      <span class="nmsg">${esc(n.message||n.status||'')}</span>
+    </div>`).join('');
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────────
+function startAdminPoll() { pollAdmin(); S.adminTimer = setInterval(pollAdmin, 3000); }
+function stopAdminPoll()  { if (S.adminTimer) { clearInterval(S.adminTimer); S.adminTimer=null; } }
+
+async function pollAdmin() {
+  const checks = [
+    {id:'order-gateway',     base:BASE.gateway},
+    {id:'identity-provider', base:BASE.identity},
+    {id:'notification-hub',  base:BASE.notif},
+    {id:'stock-service',     base:BASE.stock},
+    {id:'kitchen-queue',     base:BASE.kitchen},
+  ];
+  await Promise.allSettled(checks.map(async ({id,base})=>{
+    try {
+      const hr = await fetch(`${base}/health`,{signal:AbortSignal.timeout(2000)});
+      S.health[id] = await hr.json().catch(()=>({status:'degraded'}));
+    } catch { S.health[id]={status:'down'}; }
+    try {
+      const mr = await fetch(`${base}/metrics`,{signal:AbortSignal.timeout(2000)});
+      S.metrics[id] = await mr.json().catch(()=>({}));
+    } catch { S.metrics[id]={}; }
+  }));
+  if (S.page==='admin') renderAdmin();
+}
+
+function renderAdmin() {
+  // Health grid
+  const hg = document.getElementById('health-grid');
+  if (hg) {
+    hg.innerHTML = DEMO_SERVICES.map(svc=>{
+      const h = S.health[svc.id]||{};
+      const m = S.metrics[svc.id]||{};
+      const st = h.status||'unknown';
+      const cls = st==='ok'?'ok':st==='degraded'?'degraded':'down';
+      const stTxt = st==='ok'?'● Online':st==='degraded'?'◐ Degraded':'○ Offline';
+      const latency = m.avg_latency_ms!==undefined ? `${m.avg_latency_ms}ms avg` : '';
+      const orders  = m.total_orders!==undefined ? `${m.total_orders} orders` : (m.total_logins!==undefined?`${m.total_logins} logins`:'');
+      return `<div class="svc-card ${cls}">
+        <div class="svc-name">${esc(svc.name)}</div>
+        <div class="svc-st">${stTxt}</div>
+        <div class="svc-meta">:${svc.port}${latency?'<br>'+latency:''}${orders?'<br>'+orders:''}</div>
+        ${svc.killable?`<button class="kill-btn" onclick="killSvc('${svc.id}')">⚡ Kill</button>`:''}
+      </div>`;
+    }).join('');
+  }
+
+  // Metrics grid
+  const mg = document.getElementById('metrics-grid');
+  if (mg) {
+    const gm = S.metrics['order-gateway']||{};
+    const wAvg = gm.window_avg_latency_ms||0;
+    const alert = gm.alert_triggered||wAvg>1000;
+    document.getElementById('alert-bar')?.classList.toggle('on', alert);
+    mg.innerHTML = [
+      {lbl:'Total Orders',     val:gm.total_orders||0,         unit:'processed'},
+      {lbl:'Latency (30s avg)',val:wAvg,                        unit:'milliseconds', cls:alert?'alert':''},
+      {lbl:'Gateway Errors',   val:gm.failures||0,             unit:'failures'},
+      {lbl:'Avg Latency',      val:gm.avg_latency_ms||0,       unit:'ms all-time'},
+    ].map(m=>`<div class="mmet">
+      <div class="mmet-lbl">${m.lbl}</div>
+      <div class="mmet-val ${m.cls||''}">${m.val}</div>
+      <div class="mmet-unit">${m.unit}</div>
+    </div>`).join('');
+  }
+}
+
+async function killSvc(id) {
+  if (!confirm(`Kill ${id}? It will restart automatically via Docker.`)) return;
+  try {
+    await apiFetch(`${BASE.gateway}/chaos/kill/${id}`,{method:'POST'});
+  } catch {}
+  S.health[id]={status:'down'};
+  if (S.page==='admin') renderAdmin();
+}
+</script>
+</body>
+</html>
